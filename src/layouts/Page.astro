@@ -68,6 +68,16 @@ const jsonLd = isHome && {
     <meta name="twitter:description" content={description} />
 
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GE8KXQTVBQ"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-GE8KXQTVBQ');
+    </script>
   </head>
   <body>
     <header>
