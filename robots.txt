@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mox-lang.dev/sitemap-index.xml
