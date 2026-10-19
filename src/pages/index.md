@@ -26,7 +26,7 @@ Mox is a statically typed, data oriented, low level programming language for sof
 import "std.mox";
 
 #linkc fn main(): i32 {
-    println("hello {}!", .{ "world"; });
+    println("hello {}!", .{ "world" });
     return 0;
 }
 ```
