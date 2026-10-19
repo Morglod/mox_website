@@ -1,0 +1,125 @@
+---
+import { getTutorialTree } from '../lib/tutorials.ts';
+import Search from './Search.astro';
+
+const tree = await getTutorialTree();
+const current = Astro.url.pathname.replace(/\/?$/, '/');
+const here = (url: string) => (url === current ? 'page' : undefined);
+---
+
+<aside class="sidebar">
+  <Search />
+  <input type="checkbox" id="sidebar-toggle" class="toggle" />
+  <label for="sidebar-toggle" class="toggle-label">Menu</label>
+  <nav class="toc" aria-label="Tutorials">
+    <a class="toc-home" href="/tutorials/" aria-current={here('/tutorials/')}>All tutorials</a>
+    {
+      tree.map((c) => (
+        <section>
+          <h3>{c.title}</h3>
+          <ul>
+            {c.articles.map((a) => (
+              <li>
+                <a href={a.url} aria-current={here(a.url)}>
+                  {a.entry.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    padding: 24px 0;
+    font-size: 15px;
+  }
+
+  .toc h3 {
+    margin: 20px 0 6px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc a {
+    display: block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--fg);
+  }
+
+  .toc a[aria-current='page'] {
+    background: var(--code-bg);
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .toggle-label {
+    display: none;
+  }
+
+  .toggle:focus-visible + .toggle-label {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+  }
+
+  @media (min-width: 801px) {
+    .toggle {
+      display: none;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+    }
+
+    .toc {
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .sidebar {
+      padding: 16px 0 0;
+    }
+
+    .toggle-label {
+      display: block;
+      width: fit-content;
+      margin-top: 12px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .toc {
+      display: none;
+    }
+
+    .toggle:checked ~ .toc {
+      display: block;
+    }
+  }
+</style>

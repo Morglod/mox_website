@@ -1,0 +1,48 @@
+---
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TutorialsSidebar from '../components/TutorialsSidebar.astro';
+import '../styles/global.css';
+
+type Props = { title: string; description: string };
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} description={description} />
+  </head>
+  <body class="wide">
+    <Header />
+    <div class="tutorials">
+      <TutorialsSidebar />
+      <main>
+        <slot />
+      </main>
+    </div>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  body.wide {
+    max-width: 1140px;
+  }
+</style>
+
+<style>
+  .tutorials {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  @media (max-width: 800px) {
+    .tutorials {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+</style>

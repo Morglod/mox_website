@@ -47,27 +47,23 @@ More patterns on the [showcase page](/showcase/).
 
 ## Code generation
 
-Build code from a string and insert it into the module.
+Build code from a string and insert it into the module. Here each line of `config.txt` (`width=800`) becomes a constant.
 
 ```mox
-fn per_platform_import($path: []u8): __ast_ptr {
-    platform := "";
-
-    switch (MOX_OS) {
-        case .Windows:
-            platform = "win";
-        case .Linux:
-            platform = "sysv";
-        case:
-            platform = "unknown";
+fn make_config($path: []u8): __ast_ptr {
+    sb : StringBuilder = 0;
+    init(sb.^);
+    for (line : split_iterator(fs_read_file_full($path), "\n")) {
+        eq := index_of(line, "=");
+        format(sb.^, "const {} : i32 = {};\n", .{ slice(line, 0, eq), slice(line, eq + 1, line.len) });
     }
-
-    code := #format_temp("import \"{}_{}\";", .{ $path; platform; });
-    return __compiler_parse(code);
+    return __compiler_parse(finalize(sb.^));
 }
 
-#run #land_ast per_platform_import("module/path");
+#run #land_ast make_config("./config.txt"); // const width : i32 = 800; ...
 ```
+
+[How it works](/tutorials/comptime/code-generation/#example-constants-from-a-config-file).
 
 ## Types are values
 
@@ -75,7 +71,7 @@ A type is a real pointer to its data inside the compiler. Cast it to `*MoxType` 
 
 ```mox
 fn alloc($T: __type_ptr): *$T {
-    size := $T.cast(*MoxType).size;
+    const size := $T.cast(*MoxType).size;
     return malloc(size).cast(*$T);
 }
 
@@ -176,7 +172,7 @@ One syntax for generics, polymorphism and overloading.
 
 ```mox
 fn max($T: __type_ptr, a: $T, b: $T): $T {
-    if (a > b) return a;
+    if (a > b) { return a; }
     return b;
 }
 

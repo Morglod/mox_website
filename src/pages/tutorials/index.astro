@@ -1,0 +1,42 @@
+---
+import Tutorials from '../../layouts/Tutorials.astro';
+import { getTutorialTree } from '../../lib/tutorials.ts';
+
+const tree = await getTutorialTree();
+---
+
+<Tutorials
+  title="Tutorials - Mox programming language"
+  description="Mox tutorials: learn the language step by step, from hello world to compile time code execution."
+>
+  <h1>Tutorials</h1>
+  {
+    tree.map((c) => (
+      <section>
+        <h2>{c.title}</h2>
+        <dl>
+          {c.articles.map((a) => (
+            <>
+              <dt>
+                <a href={a.url}>{a.entry.data.title}</a>
+              </dt>
+              <dd>{a.entry.data.description}</dd>
+            </>
+          ))}
+        </dl>
+      </section>
+    ))
+  }
+</Tutorials>
+
+<style>
+  dt {
+    margin-top: 12px;
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 2px 0 0;
+    color: var(--muted);
+  }
+</style>

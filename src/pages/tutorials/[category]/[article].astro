@@ -1,0 +1,68 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Tutorials from '../../../layouts/Tutorials.astro';
+import { getTutorialTree, type TutorialEntry } from '../../../lib/tutorials.ts';
+import { neighbors, type TreeArticle } from '../../../lib/tutorials-tree.ts';
+
+export const getStaticPaths = (async () => {
+  const tree = await getTutorialTree();
+  return tree.flatMap((c) =>
+    c.articles.map((article) => ({ params: { category: c.id, article: article.slug }, props: { article } })),
+  );
+}) satisfies GetStaticPaths;
+
+type Props = { article: TreeArticle<TutorialEntry> };
+const { article } = Astro.props;
+const { Content } = await render(article.entry);
+const { prev, next } = neighbors(await getTutorialTree(), article.url);
+const { title, description } = article.entry.data;
+---
+
+<Tutorials title={`${title} - Mox tutorials`} description={description}>
+  <h1>{title}</h1>
+  <Content />
+  <nav class="pager" aria-label="Previous and next tutorial">
+    {
+      prev && (
+        <a class="prev" href={prev.url}>
+          <span>Previous</span>
+          {prev.entry.data.title}
+        </a>
+      )
+    }
+    {
+      next && (
+        <a class="next" href={next.url}>
+          <span>Next</span>
+          {next.entry.data.title}
+        </a>
+      )
+    }
+  </nav>
+</Tutorials>
+
+<style>
+  .pager {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pager a {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pager .next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .pager span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

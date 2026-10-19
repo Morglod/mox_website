@@ -1,10 +1,13 @@
 ---
-const GITHUB = 'https://github.com/Morglod/mox';
+import Head from '../components/Head.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { GITHUB } from '../lib/site.ts';
+import '../styles/global.css';
 
 const { frontmatter } = Astro.props;
 const title: string = frontmatter.title;
 const description: string = frontmatter.description;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const isHome = Astro.url.pathname === '/';
 
 const siteUrl = Astro.site?.href;
@@ -49,171 +52,13 @@ const jsonLd = isHome && {
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="color-scheme" content="light dark" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Mox programming language" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GE8KXQTVBQ"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-GE8KXQTVBQ');
-    </script>
+    <Head title={title} description={description} jsonLd={jsonLd} />
   </head>
   <body>
-    <header>
-      <a class="logo" href="/">mox</a>
-      <nav>
-        <a href="/download/">Download</a>
-        <a href="/showcase/">Showcase</a>
-        <a href={GITHUB} target="_blank" rel="nofollow noopener noreferrer">GitHub</a>
-      </nav>
-    </header>
+    <Header />
     <main>
       <slot />
     </main>
-    <footer>
-      <a href={GITHUB} target="_blank" rel="nofollow noopener noreferrer">GitHub</a> · MIT license
-    </footer>
+    <Footer />
   </body>
 </html>
-
-<style is:global>
-  :root {
-    --bg: #fff;
-    --fg: #1f2328;
-    --muted: #59636e;
-    --link: #0969da;
-    --border: #d1d9e0;
-    --code-bg: #f6f8fa;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1117;
-      --fg: #e6edf3;
-      --muted: #9198a1;
-      --link: #4493f8;
-      --border: #30363d;
-      --code-bg: #161b22;
-    }
-
-    .astro-code,
-    .astro-code span {
-      color: var(--shiki-dark) !important;
-    }
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0 auto;
-    max-width: 860px;
-    padding: 0 16px;
-    background: var(--bg);
-    color: var(--fg);
-    font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  a {
-    color: var(--link);
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo {
-    color: var(--fg);
-    font-size: 24px;
-    font-weight: 700;
-  }
-
-  nav a {
-    margin-left: 20px;
-  }
-
-  main {
-    padding: 8px 0 32px;
-  }
-
-  h1 {
-    font-size: 40px;
-    margin: 32px 0 8px;
-  }
-
-  h2 {
-    margin-top: 40px;
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  code {
-    font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
-    font-size: 14px;
-  }
-
-  :not(pre) > code {
-    padding: 2px 5px;
-    border-radius: 4px;
-    background: var(--code-bg);
-  }
-
-  pre {
-    padding: 14px 16px;
-    border-radius: 6px;
-    overflow-x: auto;
-    line-height: 1.45;
-  }
-
-  .astro-code {
-    background-color: var(--code-bg) !important;
-  }
-
-  table {
-    border-collapse: collapse;
-  }
-
-  th,
-  td {
-    padding: 4px 12px;
-    border: 1px solid var(--border);
-  }
-
-  footer {
-    padding: 16px 0 32px;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 14px;
-  }
-</style>

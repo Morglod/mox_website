@@ -63,7 +63,7 @@ fn require_dependency($link: []u8): __ast_ptr {
     if (!os_path_exists(cached_path)) {
         dep_download(cached_path, $link);
     }
-    return __compiler_parse(#format_temp("import \"{}\";", .{ cached_path; }));
+    return __compiler_parse(#format_temp("import \"{}\";", .{ cached_path }));
 }
 
 #run #land_ast require_dependency("github.com/smth/smth");

@@ -39,7 +39,15 @@ else
 fi
 
 # Wipe the worktree contents (keep the .git pointer file).
-find "$WORKTREE" -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+# Pure bash so Windows find.exe cannot shadow GNU find.
+(
+  cd "$WORKTREE"
+  shopt -s dotglob nullglob
+  for entry in *; do
+    [ "$entry" = ".git" ] && continue
+    rm -rf -- "$entry"
+  done
+)
 
 cp -R dist/. "$WORKTREE/"
 

@@ -1,0 +1,7 @@
+[
+  { "id": "getting-started", "title": "Getting started" },
+  { "id": "basics", "title": "Language basics" },
+  { "id": "memory", "title": "Memory" },
+  { "id": "comptime", "title": "Compile time" },
+  { "id": "libraries", "title": "C libraries" }
+]

@@ -1,0 +1,111 @@
+---
+import { getSearchIndex } from '../lib/search-index.ts';
+const { url } = await getSearchIndex();
+---
+
+<noscript><style>.search { display: none; }</style></noscript>
+<div class="search" data-index-url={url}>
+  <input
+    type="search"
+    placeholder="Search ( / )"
+    aria-label="Search tutorials"
+    autocomplete="off"
+    spellcheck="false"
+    role="combobox"
+    aria-expanded="false"
+    aria-controls="search-results"
+    aria-autocomplete="list"
+  />
+  <ul id="search-results" class="results" role="listbox" hidden></ul>
+</div>
+
+<script>
+  import { initSearch } from '../scripts/search.ts';
+
+  const root = document.querySelector<HTMLElement>('.search');
+  if (root) initSearch(root);
+</script>
+
+<style is:global>
+  .search {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .search input {
+    width: 100%;
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 15px;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .search input:focus {
+    outline: 2px solid var(--link);
+    outline-offset: -1px;
+  }
+
+  .search .results {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 4px);
+    left: 0;
+    width: min(480px, calc(100vw - 32px));
+    max-height: 70vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.15);
+  }
+
+  .search .results[hidden] {
+    display: none;
+  }
+
+  .search .results a {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 4px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .search .results [aria-selected='true'] a {
+    background: var(--code-bg);
+  }
+
+  .search .r-title {
+    display: block;
+    font-weight: 600;
+  }
+
+  .search .r-heading {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .search .r-snippet {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .search mark {
+    background: none;
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .search .r-status {
+    padding: 6px 8px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+</style>
