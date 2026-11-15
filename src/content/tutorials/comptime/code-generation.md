@@ -78,17 +78,17 @@ The code:
 import "std.mox";
 
 fn make_config($path: []u8): __ast_ptr {
-    sb : StringBuilder = 0;
-    init(sb.^);
+    sb := #temp_string_builder();
 
     for (line : split_iterator(fs_read_file_full($path), "\n")) {
         eq := index_of(line, "=");
+        if (eq < 0) { continue; } // empty line
         name := slice(line, 0, eq);
         value := slice(line, eq + 1, line.len);
-        format(sb.^, "const {} : i32 = {};\n", .{ name, value });
+        format(sb, "const {} : i32 = {};\n", .{ name, value });
     }
 
-    return __compiler_parse(finalize(sb.^));
+    return __compiler_parse(finalize(sb));
 }
 
 #run #land_ast make_config("./config.txt");
@@ -103,7 +103,7 @@ How it works:
 
 1. `fs_read_file_full` reads the file. This happens while compiling.
 2. `split_iterator` walks over the lines, and `index_of` finds the `=` in each one.
-3. A `StringBuilder` collects the code. For this file it is:
+3. A temp `StringBuilder` collects the code. For this file it is:
 
    ```mox
    const width : i32 = 800;
@@ -119,3 +119,34 @@ Now `width` and `height` are normal constants. The program does not read `config
 Use it when names or values in your code come from data: a config file, a table, a list of names. It is also good for picking code per platform. For simple cases, [generics](/tutorials/basics/generics/) or [macros](/tutorials/comptime/macros/) are easier to read.
 
 For example with code generation [#soa](https://github.com/Morglod/mox/blob/master/modules/soa.mox) is implemented this way.
+
+## Compile time values in emitted code
+
+Code from `#emit` can use values from the `#run` around it. Numbers are put into the code as they are. Slices are fine too: their items are copied into the program.
+
+Pointers are different. Every variable inside `#run` lives in the compiler's memory, so `text.ptr` would be an address inside the compiler. This is a compile error:
+
+```mox
+#run {
+    text := "hello";
+    #emit {
+        fn text_ptr(): *u8 {
+            return text.ptr; // error
+        }
+    };
+}
+```
+
+Copy the slice into a variable first. The copy is a normal runtime slice, its items are stored in the program, so its `.ptr` is a real pointer:
+
+```mox
+#run {
+    text := "hello";
+    #emit {
+        fn text_ptr(): *u8 {
+            s := text;
+            return s.ptr; // ok
+        }
+    };
+}
+```

@@ -3,5 +3,6 @@
   { "id": "basics", "title": "Language basics" },
   { "id": "memory", "title": "Memory" },
   { "id": "comptime", "title": "Compile time" },
-  { "id": "libraries", "title": "C libraries" }
+  { "id": "libraries", "title": "C libraries" },
+  { "id": "modules", "title": "Modules" }
 ]

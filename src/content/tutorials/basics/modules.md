@@ -48,6 +48,9 @@ This is how `std.mox` works: one import gives you the whole standard library.
 
 Some useful modules in the `modules` folder:
 
-- `std.mox` - printing, strings, memory, containers, file system, OS
+- `std.mox` - printing, strings, memory, containers, file system, OS, threads. It imports all modules from the `std` folder. You can also import only one, like `import "std/slice.mox";`
 - `build.mox` - helpers for build steps, like copying files next to the output
-- `vendor/raylib.mox`, `vendor/sdl3.mox`, `vendor/box3d.mox`, `vendor/microui.mox` - ready bindings for these C libraries
+- `game/animate.mox` - easing functions and animation curves
+- `game/atlas.mox` - packs rectangles into pages, for texture atlases
+- `game/immediate_state.mox` - keeps state for immediate mode UI
+- `vendor/raylib.mox`, `vendor/sdl3.mox`, `vendor/box3d.mox`, `vendor/microui.mox`, `vendor/libspng.mox` - ready bindings for these C libraries

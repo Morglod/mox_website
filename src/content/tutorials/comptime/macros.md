@@ -91,16 +91,18 @@ A macro can take code (`__ast_ptr`) and insert it with `#land_ast`:
 fn #repeat(n: u64, code: __ast_ptr) {
     `it: u64 = 0;
     while (`it < n) {
-        #land_ast code;
+        `#land_ast code;
         `it = `it + 1;
     }
 }
 
 fn main() {
     total : u64 = 0;
-    #repeat(10, #run #ast total += it);
+    #repeat(10, #ast total += it);
 }
 ```
+
+`` `#land_ast `` inserts the code as if it was written in the caller, so it sees the caller's names, like `total`. Plain `#land_ast` inside a macro sees only the macro's own names.
 
 `it` comes from the macro with a backtick, so the code you pass can use it.
 
@@ -123,4 +125,4 @@ s.size = 10; // writes s.len
 
 The expression is compiled where the alias is declared, not where it is used. So unlike C defines, it can not see the caller's variables.
 
-Aliases could slow compilation, because the expression is compiled again each time it is used and also makes code less predictable. Use them only when you really need them.
+Aliase's expression is compiled again each time it is used and also makes code less predictable. Use them only when you really need them.

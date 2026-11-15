@@ -57,33 +57,32 @@ To check the OS, use `MOX_OS`:
 
 This is the fun part. While compiling, the code below:
 
-1. builds a small C library with clang,
+1. builds a small C library with clang, right in the output folder,
 2. loads it into the compiler,
-3. copies it next to the final program,
-4. calls its function at compile time.
+3. calls its function at compile time.
 
 ```mox
 import "std.mox";
-import "build.mox";
 
 // the C function we will build
 #linkc fn comptime_example(a: i32, b: i32): i32;
 
 #run {
+    out_dir := __compiler_output_dir();
+    temp := get_context_temp_arena_as_alloc();
     if (MOX_OS == .Windows) {
-        os_exec("echo __declspec(dllexport) int comptime_example(int a, int b) { return a + b; } | clang -x c - -shared -o comptime_example.dll");
-        __compiler_link_lib("comptime_example.dll", true);
-        build_copy_to_output("./comptime_example.dll");
+        os_exec(format(temp, "echo __declspec(dllexport) int comptime_example(int a, int b) { return a + b; } | clang -x c - -shared -o \"{}comptime_example.dll\"", .{ out_dir }));
     } else {
-        os_exec("echo 'int comptime_example(int a, int b) { return a + b; }' | clang -x c - -shared -o comptime_example.so");
-        __compiler_link_lib("comptime_example.so", true);
-        build_copy_to_output("./comptime_example.so");
+        os_exec(format(temp, "echo 'int comptime_example(int a, int b) { return a + b; }' | clang -x c - -shared -o \"{}comptime_example.so\"", .{ out_dir }));
     }
+    __compiler_link_lib(format(temp, "{}comptime_example", .{ out_dir }), true);
     println("comptime_example(10, 20) = {}", .{ comptime_example(10, 20) });
 }
 ```
 
-`__compiler_link_lib(path, true)` loads the library into the compiler.  
+`__compiler_output_dir()` is the folder of the output executable. The library is built there, so it ends up next to the program.
+
+`__compiler_link_lib(path, true)` loads the library into the compiler. The path is written without the file extension.  
 So `comptime_example` can be called right away inside `#run`.
 
-`build_copy_to_output` from `build.mox` copies a file next to the output executable.
+A file made somewhere else can be copied next to the output executable with `build_copy_to_output` from `build.mox`.

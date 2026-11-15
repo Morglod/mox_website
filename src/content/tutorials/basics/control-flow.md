@@ -39,15 +39,20 @@ for (x, index : it_range(10u32)) {
 A `for` loop is a short way to write this:
 
 ```mox
-__it := it_range(10u32);
-while (iterator_next(__it.^)) {
-    x := iterator_current(__it.^);
-    // body
+{
+    __it := it_range(10u32);
+    defer iterator_end(__it.^);
+    while (iterator_next(__it.^)) {
+        x := iterator_current(__it.^);
+        // body
+    }
 }
 ```
 
 So to make your own iterator,  
-write your own `iterator_next` and `iterator_current` functions for your iterator type.
+write your own `iterator_next`, `iterator_current` and `iterator_end` functions for your iterator type.
+
+`iterator_end` runs when the loop ends, also on `break` and `return`. Free the iterator's resources there.
 
 ## switch
 

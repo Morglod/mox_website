@@ -149,9 +149,7 @@ const SIZE : i64 = 10;
 const NAME := "mox";
 ```
 
-A constant is known at compile time.
-
-Any initial value or expression for constants are evaluated at compile time.
+A constant value lives at compile time. Its initial value can be any expression, and it is evaluated while compiling.
 
 ## Global variables
 
@@ -163,6 +161,12 @@ greeting : []u8 = "hello";
 ```
 
 Unlike a constant, a global can be changed while the program runs.
+
+Add `#thread_local` to give each thread its own copy of a global:
+
+```mox
+frame_count : i64 = 0; #thread_local
+```
 
 ## Two special types
 

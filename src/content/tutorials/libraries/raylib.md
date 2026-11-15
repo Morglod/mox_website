@@ -75,6 +75,7 @@ The window opens during the build. When you close it, the compiler goes on. This
 - `examples/asteroids.mox` - a small asteroids game with raylib.
 - `examples/box3d.mox` - 3D physics with box3d, drawn with raylib.
 - `examples/microui.mox` - a UI made with microui, drawn with raylib.
+- `examples/immediate_state.mox` - animated buttons made with `game/immediate_state.mox`, drawn with raylib.
 
 All of them build the same way:
 

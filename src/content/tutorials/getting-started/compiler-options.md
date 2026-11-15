@@ -44,6 +44,8 @@ mox ./hello.mox -g
 - `-o=path` sets the path of the final executable.
 - `out=path` sets the path of the compiler output (the `.obj` file, LLVM IR or C source).
 
+Missing folders in these paths are created.
+
 ```bash
 mox ./hello.mox -o=./build/hello
 ```

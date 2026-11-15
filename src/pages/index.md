@@ -51,13 +51,13 @@ Build code from a string and insert it into the module. Here each line of `confi
 
 ```mox
 fn make_config($path: []u8): __ast_ptr {
-    sb : StringBuilder = 0;
-    init(sb.^);
+    sb := #temp_string_builder();
     for (line : split_iterator(fs_read_file_full($path), "\n")) {
         eq := index_of(line, "=");
-        format(sb.^, "const {} : i32 = {};\n", .{ slice(line, 0, eq), slice(line, eq + 1, line.len) });
+        if (eq < 0) { continue; }
+        format(sb, "const {} : i32 = {};\n", .{ slice(line, 0, eq), slice(line, eq + 1, line.len) });
     }
-    return __compiler_parse(finalize(sb.^));
+    return __compiler_parse(finalize(sb));
 }
 
 #run #land_ast make_config("./config.txt"); // const width : i32 = 800; ...
@@ -142,7 +142,7 @@ The `math.mox` module ships with the compiler:
 - Easing and movement: `smoothstep`, `smootherstep`, `inverse_lerp`, `remap`, `move_towards`, `damp`, `smooth_damp`
 - Space and time: `is_point_in_rect`, `wrap_in_rect`, `fract`, `saturate`, `snap`, `ping_pong`, `repeat`
 
-Plus the usual `sqrt`, `sin`/`cos`/`tan`, `pow`, `exp`, `log`, `floor`/`ceil`/`round`. See [modules/math.mox](https://github.com/Morglod/mox/blob/master/modules/math.mox).
+Plus the usual `sqrt`, `sin`/`cos`/`tan`, `pow`, `exp`, `log`, `floor`/`ceil`/`round`. See [modules/math.mox](https://github.com/Morglod/mox/blob/master/modules/std/math.mox).
 
 Vendored libraries come with prebuilt binaries for Windows and Linux. [raylib](https://www.raylib.com) and [SDL3](https://www.libsdl.org) work out of the box, no system install:
 
