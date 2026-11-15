@@ -8,7 +8,7 @@ description: Download the Mox programming language compiler for Windows and Linu
 
 One zip contains the compiler for Windows and Linux and the base modules.
 
-[0.2.0 Windows/Linux](https://github.com/Morglod/mox/releases/download/0.2.0/mox_020_191026.zip)
+[0.3.0 Windows/Linux](https://github.com/Morglod/mox/releases/download/0.3.0/mox_030.zip)
 
 [Latest release on GitHub](https://github.com/Morglod/mox/releases/latest)
 
